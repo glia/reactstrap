@@ -24,6 +24,7 @@ const propTypes = {
   keyboard: PropTypes.bool,
   role: PropTypes.string,
   labelledBy: PropTypes.string,
+  container: PropTypes.object,
   backdrop: PropTypes.oneOfType([
     PropTypes.bool,
     PropTypes.oneOf(['static'])
@@ -149,15 +150,18 @@ class Modal extends React.Component {
   }
 
   destroy() {
+    
+    let container = ReactDOM.findDOMNode(this.props.container) || document.body;
+    
     if (this._element) {
       ReactDOM.unmountComponentAtNode(this._element);
-      document.body.removeChild(this._element);
+      container.removeChild(this._element);
       this._element = null;
     }
 
     // Use regex to prevent matching `modal-open` as part of a different class, e.g. `my-modal-opened`
-    const classes = document.body.className.replace(/(^| )modal-open( |$)/, ' ');
-    document.body.className = mapToCssModules(classNames(classes).trim(), this.props.cssModule);
+    const classes = container.className.replace(/(^| )modal-open( |$)/, ' ');
+    container.className = mapToCssModules(classNames(classes).trim(), this.props.cssModule);
     setScrollbarWidth(this.originalBodyPadding);
   }
 
@@ -171,17 +175,24 @@ class Modal extends React.Component {
       return;
     }
     const classes = document.body.className;
+    
     this._element = document.createElement('div');
     this._element.setAttribute('tabindex', '-1');
     this._element.style.position = 'relative';
     this._element.style.zIndex = this.props.zIndex;
+    
     this.originalBodyPadding = getOriginalBodyPadding();
 
     conditionallyUpdateScrollbar();
 
-    document.body.appendChild(this._element);
+    //this._element = ReactDOM.findDOMNode(container);
+    
+    let container = ReactDOM.findDOMNode(this.props.container) || document.body;
+    container.appendChild(this._element);
+    console.log('Modal show container this._element', container, this._element, typeof container);
+    //document.body.appendChild(this._element);
 
-    document.body.className = mapToCssModules(classNames(
+    container.className = mapToCssModules(classNames(
       classes,
       'modal-open'
     ), this.props.cssModule);
