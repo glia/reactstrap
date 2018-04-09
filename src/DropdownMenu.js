@@ -20,10 +20,18 @@ const defaultProps = {
 
 const contextTypes = {
   isOpen: PropTypes.bool.isRequired,
-  dropup: PropTypes.bool.isRequired,
+  direction: PropTypes.oneOf(['up', 'down', 'left', 'right']).isRequired,
+  inNavbar: PropTypes.bool.isRequired,
 };
 
 const noFlipModifier = { flip: { enabled: false } };
+
+const directionPositionMap = {
+  up: 'top',
+  left: 'left',
+  right: 'right',
+  down: 'bottom',
+};
 
 const DropdownMenu = (props, context) => {
   const { className, cssModule, right, tag, flip, ...attrs } = props;
@@ -38,9 +46,10 @@ const DropdownMenu = (props, context) => {
 
   let Tag = tag;
 
-  if (context.isOpen) {
+  if (context.isOpen && !context.inNavbar) {
     Tag = Popper;
-    const position1 = context.dropup ? 'top' : 'bottom';
+
+    const position1 = directionPositionMap[context.direction] || 'bottom';
     const position2 = right ? 'end' : 'start';
     attrs.placement = `${position1}-${position2}`;
     attrs.component = tag;
