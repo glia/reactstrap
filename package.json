@@ -88,6 +88,7 @@
   },
   "homepage": "https://github.com/reactstrap/reactstrap#readme",
   "dependencies": {
+    "babel-plugin-transform-minify-booleans": "^6.9.1",
     "classnames": "^2.2.3",
     "lodash.isfunction": "^3.0.9",
     "lodash.isobject": "^3.0.2",
